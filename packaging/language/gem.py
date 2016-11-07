@@ -90,6 +90,11 @@ options:
       - Allow adding build flags for gem compilation
     required: false
     version_added: "2.0"
+  binary_dir:
+    description:
+      - Set target directory for installing any gem command-line components.
+    required: false
+    version_added: "2.3.0"
 author:
     - "Ansible Core Team"
     - "Johan Wiren"
@@ -212,6 +217,8 @@ def install(module):
     cmd.append(module.params['gem_source'])
     if module.params['build_flags']:
         cmd.extend([ '--', module.params['build_flags'] ])
+    if module.params['binary_dir']:
+        cmd.extend([ '--bindir', module.params['binary_dir'] ])
     module.run_command(cmd, check_rc=True)
 
 def main():
@@ -230,6 +237,7 @@ def main():
             env_shebang          = dict(required=False, default=False, type='bool'),
             version              = dict(required=False, type='str'),
             build_flags          = dict(required=False, type='str'),
+            binary_dir           = dict(required=False, type='str'),
         ),
         supports_check_mode = True,
         mutually_exclusive = [ ['gem_source','repository'], ['gem_source','version'] ],
